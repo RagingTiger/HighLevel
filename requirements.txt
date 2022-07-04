@@ -1,4 +1,6 @@
 sentencepiece==0.1.96
 streamlit==1.10.0
+tensorflow==2.9.1; platform_machine == 'x86_64'
+tflite==2.4.0; platform_machine != 'x86_64'
 torch==1.12.0
 transformers==4.20.1
