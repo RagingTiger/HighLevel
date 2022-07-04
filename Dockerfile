@@ -9,10 +9,10 @@ ENV HF_HOME=/huggingface_models
 ENV TRANSFORMERS_CACHE=${HF_HOME}/transformers
 
 # create workdir
-WORKDIR /Digest
+WORKDIR /HighLevel
 
 # copy source
-COPY . /Digest
+COPY . /HighLevel
 
 # update and pip install
 RUN apt-get update && \
