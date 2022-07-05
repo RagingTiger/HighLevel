@@ -5,7 +5,7 @@ FROM python:3.8
 EXPOSE 8501
 
 # set huggingface env
-ENV HF_HOME=/huggingface_models
+ENV HF_HOME=/models/huggingface
 ENV TRANSFORMERS_CACHE=${HF_HOME}/transformers
 
 # create workdir
