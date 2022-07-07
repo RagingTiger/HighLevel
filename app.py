@@ -1,4 +1,5 @@
 from multiprocessing import Queue, Process
+import pkg_resources
 import streamlit as st
 
 # custom libs
@@ -78,6 +79,18 @@ with st.sidebar:
     # load custom model exec code
     st.header('Custom Execution Code')
     use_custom_code = st.checkbox('Use custom code')
+
+    # load installed packages
+    st.header('Installed Packages')
+    show_packages = st.checkbox('Show installed packages')
+
+    # display packages if checked
+    if show_packages:
+        # get packages
+        packages = pkg_resources.working_set
+
+        # notify
+        st.info(sorted(["%s==%s" % (i.key, i.version) for i in packages]))
 
     # clear model/data cache
     st.header('Model/Data Cache')
