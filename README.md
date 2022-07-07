@@ -7,7 +7,7 @@ To deploy the *streamlit app* with **Docker**:
 ```
 docker run -d \
            --name highlevel \
-           -v highlevel_models:/huggingface_models \
+           -v highlevel_models:/models \
            -p 8501:8501 \
            ghcr.io/ragingtiger/highlevel:master
 ```
