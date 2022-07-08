@@ -5,7 +5,13 @@ import streamlit as st
 # custom libs
 from packages import model_utils
 
+# user defined custom import statements
+if model_utils.custom_imports:
+    # get import statements
+    exec(model_utils.custom_imports)
 
+
+# funcs
 def inference_process(queue, **parameters):
     # now run inference and store result in IPC queue
     queue.put(model_utils.model_exec(**parameters))
@@ -81,16 +87,33 @@ with st.sidebar:
     use_custom_code = st.checkbox('Use custom code')
 
     # load installed packages
-    st.header('Installed Packages')
-    show_packages = st.checkbox('Show installed packages')
+    st.header('Modules')
+    st.write('Loaded')
+    st.success(
+        '  \n'.join(
+            sorted(
+                [key for key in globals().keys() if not key.startswith('__') \
+                 and isinstance(globals()[key], type(st))]
+            )
+        )
+    )
 
-    # display packages if checked
-    if show_packages:
-        # get packages
-        packages = pkg_resources.working_set
+    # load custom import statements
+    use_custom_modules = st.checkbox('Import additional modules')
 
-        # notify
-        st.info(sorted(["%s==%s" % (i.key, i.version) for i in packages]))
+    # show installed
+    show_installed_packages = st.checkbox('Show installed packages')
+
+    # if showing
+    if show_installed_packages:
+        # display
+        st.write('Installed')
+        st.success(
+            '  \n'.join(
+                sorted(["%s==%s" % (i.key, i.version) \
+                for i in pkg_resources.working_set])
+            )
+        )
 
     # clear model/data cache
     st.header('Model/Data Cache')
@@ -133,12 +156,36 @@ inference_task = st.selectbox(
 # select model
 model = st.selectbox('Model', model_utils.gen_model_selection())
 
+# check for custom module feature
+if use_custom_modules:
+    # get custom modules
+    custom_import_statements = st.text_area(
+        'Custom Import Statements',
+        value=model_utils.custom_imports,
+        placeholder=model_utils.custom_imports
+    )
+
+    # create exec button
+    update_modules_button = st.button('Import')
+
+    # check if updating modules
+    if update_modules_button:
+        # cache import statements
+        model_utils.custom_imports = custom_import_statements
+
+        # now reload from top
+        st.experimental_rerun()
+
 # get custom model code if any
 if use_custom_code:
     # get custom code
     model_exec_code = st.text_area(
         'Custom Model Execution Code',
-        placeholder='# custom code here'
+        placeholder=(
+            'def model_exec(**parameters):\n'
+            '  # complete this function with your code and return your output\n'
+            '  return inference_output'
+        )
     )
     # create columns
     col1, col2 = st.columns([1,1])
